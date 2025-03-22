@@ -1,44 +1,41 @@
 require("dotenv").config();
-const express = require("express");
-const axios = require("axios");
+const express = require('express');
+const nodemailer = require('nodemailer'); // นำเข้า nodemailer
+const bodyParser = require('body-parser');
 
 const app = express();
-app.use(express.json());
+app.use(bodyParser.json());
 
-const MAILTRAP_API_URL = "https://send.api.mailtrap.io/api/send";
-
-app.post("/send-email", async (req, res) => {
-  const { to, subject, text } = req.body;
-
-  if (!to || !subject || !text) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
-
-  try {
-    const response = await axios.post(
-      MAILTRAP_API_URL,
-      {
-        to: [{ email: to }],
-        from: { email: "no-reply@example.com", name: "Your Service" },
-        subject,
-        text,
-      },
-      {
-        headers: {
-          "Authorization": `Bearer ${process.env.MAILTRAP_API_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    res.json({ message: "Email sent successfully", data: response.data });
-  } catch (error) {
-    console.error(error.response ? error.response.data : error.message);
-    res.status(500).json({ error: "Failed to send email" });
+const transporter = nodemailer.createTransport({ // ตรวจสอบว่าตัวแปรนี้อยู่หลังจาก require
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER, 
+    pass: process.env.EMAIL_PASS 
   }
 });
 
-const PORT = 3003;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.get('/test', (req, res) => {
+  res.send();
+});
+app.post('/send-email', (req, res) => {
+  const { to, subject, text } = req.body;
+  
+  const mailOptions = {
+    from: 'youremail@gmail.com',
+    to,
+    subject,
+    text
+  };
+  
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return res.status(500).json({ success: false, error: error.message });
+    } else {
+      return res.json({ success: true, message: 'Email sent: ' + info.response });
+    }
+  });
+});
+
+app.listen(3000, () => {
+  console.log('Server started on port 3000');
 });
