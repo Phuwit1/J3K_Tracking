@@ -63,20 +63,10 @@ app.post('/parcel', async (req, res) => {
       },
     });
 
-    try {
-      await axios.post(NOTIFICATION_SERVICE_URL, {
-        email,
-        parcelId: trackingCode,
-        sender: senderName,
-        receiver: recipientName,
-        status: "Created",
-      });
-
-      console.log(`📧 Notification sent to: ${email}`);
-    } catch (notificationError) {
-      console.error("❌ Error sending notification:", notificationError.message);
-    }
-
+    await axios.post('http://localhost:3003/notify-parcel', {
+      senderPhone, 
+      recipientPhone,
+    });
 
     res.json(newData);
   } catch (error) {
@@ -165,7 +155,7 @@ app.delete('/parcel/:id', async (req, res) => {
 
 
 // 📌 ตั้งค่า Port และรันเซิร์ฟเวอร์
-const PORT = process.env.PORT || 3001;
+const PORT = 3001;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
