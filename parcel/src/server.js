@@ -1,10 +1,16 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
+import crypto from 'crypto';
+import axios from 'axios';
+
 
 const app = express();
 const prisma = new PrismaClient();
 
 app.use(express.json()); // รองรับ JSON request body
+
+
+const NOTIFICATION_SERVICE_URL = "http://localhost:3003/notify-parcel";
 
 // 📌 GET: ค้นหาพัสดุด้วย search params
 app.get('/parcel', async (req, res) => {
@@ -56,6 +62,21 @@ app.post('/parcel', async (req, res) => {
         email,
       },
     });
+
+    try {
+      await axios.post(NOTIFICATION_SERVICE_URL, {
+        email,
+        parcelId: trackingCode,
+        sender: senderName,
+        receiver: recipientName,
+        status: "Created",
+      });
+
+      console.log(`📧 Notification sent to: ${email}`);
+    } catch (notificationError) {
+      console.error("❌ Error sending notification:", notificationError.message);
+    }
+
 
     res.json(newData);
   } catch (error) {
