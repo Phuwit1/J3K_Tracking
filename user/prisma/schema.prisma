@@ -12,3 +12,28 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum NotificationType {
+  SHIPPED
+  OUT_FOR_DELIVERY
+  DELIVERED
+  EXCEPTION
+  CUSTOM
+}
+
+enum NotificationChannel {
+  SMS
+  EMAIL
+  PUSH_NOTIFICATION
+}
+
+model Notification {
+  id       Int                  @id @default(autoincrement())
+  parcelId Int
+  type     NotificationType
+  message  String
+  sentAt   DateTime @default(now())
+  channel  NotificationChannel[]
+}
+
+

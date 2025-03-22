@@ -28,6 +28,7 @@ model Parcel {
 
   senderPhone    String?
   recipientPhone String?
+  email          String?
 
   @@index([trackingCode]) // สร้าง index เพื่อเพิ่มประสิทธิภาพการค้นหา
 }
