@@ -39,6 +39,7 @@ app.post('/parcel', async (req, res) => {
       recipientAddress,
       senderPhone,
       recipientPhone,
+      email,
     } = req.body;
 
     const newData = await prisma.parcel.create({
@@ -52,6 +53,7 @@ app.post('/parcel', async (req, res) => {
         recipientAddress,
         senderPhone,
         recipientPhone,
+        email,
       },
     });
 
@@ -96,6 +98,7 @@ app.put('/parcel/:id', async (req, res) => {
       recipientAddress,
       senderPhone,
       recipientPhone,
+      email,
     } = req.body;
 
     const updatedData = await prisma.parcel.update({
@@ -112,6 +115,7 @@ app.put('/parcel/:id', async (req, res) => {
         recipientAddress,
         senderPhone,
         recipientPhone,
+        email,
       },
     });
 

@@ -9,8 +9,10 @@ app.use(express.json()); // Middleware รองรับ JSON request body
 // GET: ดึงข้อมูลพัสดุทั้งหมด
 app.get('/history', async (req, res) => {
   try {
-    const parcels = await prisma.parcel.findMany();
-    res.json(parcels);
+    const history = await prisma.history.findMany({
+      where: { parcelId: { not: null}}
+    });
+    res.json(history);
   } catch (error) {
     res.status(500).json({ message: 'Internal server error', error: error.message });
   }
@@ -21,7 +23,7 @@ app.post('/history', async (req, res) => {
   try {
     const { trackingCode, status, location, description } = req.body;
 
-    const parcel = await prisma.parcel.findUnique({
+    const parcel = await prisma.history.findMany({
       where: { trackingCode: trackingCode },
     });
 
