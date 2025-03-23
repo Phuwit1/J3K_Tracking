@@ -1,11 +1,17 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import axios from 'axios';
+import cors from 'cors';  // ✅ เพิ่ม CORS
 
 const app = express();
 const prisma = new PrismaClient();
 const PARCEL_SERVICE_URL = process.env.PARCEL_SERVICE_URL || 'http://localhost:3001';
 
+// ✅ เปิดให้ Frontend (`http://localhost:3000`) ใช้ API ได้
+app.use(cors({
+  origin: 'http://localhost:3000', // อนุญาตเฉพาะ Frontend ของคุณ
+  methods: ['GET', 'POST'], // อนุญาตเฉพาะ method ที่ใช้
+}));
 app.use(express.json());
 
 // Function สำหรับเรียกข้อมูลพัสดุด้วย tracking code จาก parcel service

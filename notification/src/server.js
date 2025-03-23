@@ -1,11 +1,19 @@
+import cors from 'cors';  // ✅ เพิ่ม CORS
+
 require("dotenv").config();
 const express = require('express');
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const { sendSMS } = require('./smsService'); 
 const axios = require('axios'); // ต้องติดตั้ง axios เพิ่ม: npm install axios
-
 const app = express();
+
+// ✅ เปิดให้ Frontend (`http://localhost:3000`) ใช้ API ได้
+app.use(cors({
+  origin: 'http://localhost:3000', // อนุญาตเฉพาะ Frontend ของคุณ
+  methods: ['GET', 'POST'], // อนุญาตเฉพาะ method ที่ใช้
+}));
+
 app.use(bodyParser.json());
 
 const transporter = nodemailer.createTransport({

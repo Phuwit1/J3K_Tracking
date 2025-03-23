@@ -2,10 +2,17 @@ import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import crypto from 'crypto';
 import axios from 'axios';
-
+import cors from 'cors';  // ✅ เพิ่ม CORS
 
 const app = express();
 const prisma = new PrismaClient();
+
+
+// ✅ เปิดให้ Frontend (`http://localhost:3000`) ใช้ API ได้
+app.use(cors({
+  origin: 'http://localhost:3000', // อนุญาตเฉพาะ Frontend ของคุณ
+  methods: ['GET', 'POST'], // อนุญาตเฉพาะ method ที่ใช้
+}));
 
 app.use(express.json()); // รองรับ JSON request body
 
@@ -64,7 +71,7 @@ app.post('/parcel', async (req, res) => {
     });
 
     await axios.post('http://localhost:3003/notify-parcel', {
-      senderPhone, 
+      senderPhone,
       recipientPhone,
     });
 
