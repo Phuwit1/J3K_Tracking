@@ -1,0 +1,31 @@
+/* ./styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f8f8f8;
+  color: #333;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Georgia', serif;
+}
+
+/* กำหนดสีพื้นหลังแบบจีน */
+.bg-red-custom {
+  background-color: #ff4f58;
+}
+
+.text-red-custom {
+  color: #ff4f58;
+}
+
+.text-gold-custom {
+  color: #FFD700;
+}
+
+button:disabled {
+  opacity: 0.6;
+}
