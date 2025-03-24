@@ -34,6 +34,7 @@ app.get('/parcel', async (req, res) => {
 
     res.json(parcels);
   } catch (error) {
+    console.error('Database Error:', error);  // Log ข้อผิดพลาด
     res.status(500).json({ error: 'Server error', details: error.message });
   }
 });
@@ -77,6 +78,7 @@ app.post('/parcel', async (req, res) => {
 
     res.json(newData);
   } catch (error) {
+    console.error('Database Error:', error);  // Log ข้อผิดพลาด
     res.status(500).json({ error: 'Server error', details: error.message });
   }
 });
@@ -98,6 +100,7 @@ app.get('/parcel/:id', async (req, res) => {
 
     res.json(data);
   } catch (error) {
+    console.error('Database Error:', error);  // Log ข้อผิดพลาด
     res.status(500).json({ error: 'Server error', details: error.message });
   }
 });
@@ -139,6 +142,7 @@ app.put('/parcel/:id', async (req, res) => {
 
     res.json(updatedData);
   } catch (error) {
+    console.error('Database Error:', error);  // Log ข้อผิดพลาด
     res.status(500).json({ error: 'Server error', details: error.message });
   }
 });
@@ -156,6 +160,7 @@ app.delete('/parcel/:id', async (req, res) => {
 
     res.json({ message: 'Parcel deleted successfully', data: deleteData });
   } catch (error) {
+    console.error('Database Error:', error);  // Log ข้อผิดพลาด
     res.status(500).json({ error: 'Server error', details: error.message });
   }
 });
