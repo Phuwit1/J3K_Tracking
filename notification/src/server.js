@@ -1,11 +1,13 @@
-import cors from 'cors';  // ✅ เพิ่ม CORS
+import dotenv from "dotenv";
+dotenv.config();
 
-require("dotenv").config();
-const express = require('express');
-const nodemailer = require('nodemailer');
-const bodyParser = require('body-parser');
-const { sendSMS } = require('./smsService'); 
-const axios = require('axios'); // ต้องติดตั้ง axios เพิ่ม: npm install axios
+import express from "express";
+import cors from "cors";
+import nodemailer from "nodemailer";
+import bodyParser from "body-parser";
+import axios from "axios";
+// import { sendSMS } from "./smsService.js"; // ต้องใส่ .js
+
 const app = express();
 
 // ✅ เปิดให้ Frontend (`http://localhost:3000`) ใช้ API ได้

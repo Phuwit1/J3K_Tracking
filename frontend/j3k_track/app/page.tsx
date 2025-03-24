@@ -1,6 +1,7 @@
+// page.tsx
 'use client';
-
 import { useState } from 'react';
+import Link from 'next/link'; // Import Link component
 
 export default function TrackingHistory() {
   const [trackingCode, setTrackingCode] = useState('');
@@ -73,6 +74,14 @@ export default function TrackingHistory() {
                 <p className="text-lg"><strong>📍 位置:</strong> {record.location}</p>
                 <p className="text-lg"><strong>⏳ 时间:</strong> {new Date(record.timestamp).toLocaleString()}</p>
                 <p className="italic text-sm">📝 {record.description}</p>
+                {/* เพิ่มปุ่ม "ดูแผนที่" พร้อม Link */}
+                <div className="mt-2">
+                  <Link href={`/gps?trackingCode=${history.parcel.trackingCode}`} legacyBehavior>
+                    <a className="inline-block bg-gold-500 hover:bg-gold-700 text-white py-2 px-4 rounded-lg font-bold text-sm">
+                      🗺️ ดูแผนที่
+                    </a>
+                  </Link>
+                </div>
               </li>
             ))}
           </ul>
