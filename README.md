@@ -7,3 +7,5 @@ npm install axios
 npm install express axios resend dotenv
 npm install nodemailer
 npm install dotenv
+npm install cors
+npm install twilio dotenv
