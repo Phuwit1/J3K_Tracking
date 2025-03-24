@@ -7,30 +7,13 @@ const mapContainerStyle = {
 };
 
 const GoogleMapComponent = ({ destination, currentLocation }) => {
-  const [directions, setDirections] = useState(null);
 
   useEffect(() => {
-    if (currentLocation && destination) {
-      const directionsService = new google.maps.DirectionsService();
-      directionsService.route(
-        {
-          origin: currentLocation,
-          destination: destination,
-          travelMode: google.maps.TravelMode.DRIVING,
-        },
-        (result, status) => {
-          if (status === google.maps.DirectionsStatus.OK) {
-            setDirections(result);
-          } else {
-            console.error("Error fetching directions", result);
-          }
-        }
-      );
-    }
+    
   }, [currentLocation, destination]);
 
   return (
-    <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
+    <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEYS}>
       <GoogleMap mapContainerStyle={mapContainerStyle} center={destination} zoom={14}>
         {/* หมุดตำแหน่งคงที่ */}
         <Marker position={destination} label="📍" />
@@ -38,8 +21,6 @@ const GoogleMapComponent = ({ destination, currentLocation }) => {
         {/* หมุดตำแหน่งปัจจุบัน */}
         {currentLocation && <Marker position={currentLocation} label="🚚" />}
 
-        {/* แสดงเส้นทาง */}
-        {/* {directions && <DirectionsRenderer directions={directions} />} */}
       </GoogleMap>
     </LoadScript>
   );

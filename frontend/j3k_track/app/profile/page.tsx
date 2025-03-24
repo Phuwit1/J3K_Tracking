@@ -5,16 +5,28 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 export default function Profile() {
-  const { data: session, status } = useSession()
+  const { data: session, status, update } = useSession()
 
   const router = useRouter()
 
   useEffect(() => {
+    const fetchSession = async () => {
+      try {
+        const response = await fetch("/api/auth/session");
+        const data = await response.json();
+        if (data) {
+          await update();
+        }
+      } catch (error) {
+        console.error("Error fetching session:", error);
+      }
+    };
+    fetchSession();
     if (status === 'unauthenticated') {
       router.push('/')
     }
-  }, [status, router])
-
+  }, [router])
+  console.log(session)
   // When after loading success and have session, show profile
   return (
     status === 'authenticated' &&
