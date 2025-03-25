@@ -1,24 +1,24 @@
 "use client";
 import { useState } from "react";
 import Card from "../../components/update/card";
-import Input  from "../../components/update/input";
-import Select  from "../../components/update/select";
+import Input from "../../components/update/input";
+import Select from "../../components/update/select";
 import SelectItem from "../../components/update/select-item";
 import Textarea from "../../components/update/textarea";
 import Button from "../../components/update/button";
 
 
 interface Parcel {
-    id: string;
-    senderName: string;
-    recipientName: string;
-    trackingCode: string;
-  }
+  id: string;
+  senderName: string;
+  recipientName: string;
+  trackingCode: string;
+}
 
-  interface ParcelStatus {
-    status: string;
-  }
-  
+interface ParcelStatus {
+  status: string;
+}
+
 
 export default function UpdateStatus() {
   const [trackingNumber, setTrackingNumber] = useState("");
@@ -42,7 +42,7 @@ export default function UpdateStatus() {
       console.log("STATUS : " + statusdata2.status);
       setStatus(statusdata2.status);
 
-      
+
     } catch (error) {
       setParcel(null);
       alert(error.message);
@@ -56,7 +56,7 @@ export default function UpdateStatus() {
         alert("กรุณาค้นหาข้อมูลพัสดุก่อนอัปเดตสถานะ");
         return;
       }
-      
+
       // บันทึกสถานะใหม่
       const response = await fetch(`http://localhost:3002/parcel-status/${parcel.id}`, {
         method: "PUT",
@@ -64,33 +64,51 @@ export default function UpdateStatus() {
         body: JSON.stringify({ status }),
       });
 
-    console.log("Parcel data before update:", parcel);
-    console.log("trackingCode value:", parcel.trackingCode);
-    
-    // const trackingCodeToUse = parcel.trackingCode || trackingNumber;
+      console.log("Parcel data before update:", parcel);
+      console.log("trackingCode value:", parcel.trackingCode);
 
-    // if (!trackingCodeToUse) {
-    //     alert("ไม่พบรหัสติดตามพัสดุ");
-    //     return;
-    // }
-      
+      // const trackingCodeToUse = parcel.trackingCode || trackingNumber;
+
+      // if (!trackingCodeToUse) {
+      //     alert("ไม่พบรหัสติดตามพัสดุ");
+      //     return;
+      // }
+
       if (!response.ok) throw new Error("อัปเดตสถานะไม่สำเร็จ");
-      
-      const responsehistory = await fetch(`http://localhost:3004/history/parcel`, {
+
+      const getDescription = (status) => {
+        switch (status) {
+          case "PENDING":
+            return "พัสดุของคุณอยู่ระหว่างการเตรียมจัดส่ง";
+          case "IN_TRANSIT":
+            return "พัสดุกำลังอยู่ระหว่างการขนส่ง";
+          case "OUT_FOR_DELIVERY":
+            return "พัสดุกำลังนำจ่ายถึงปลายทาง";
+          case "DELIVERED":
+            return "พัสดุถูกจัดส่งเรียบร้อยแล้ว";
+          case "EXCEPTION":
+            return "เกิดปัญหาระหว่างการจัดส่ง กรุณาติดต่อฝ่ายบริการลูกค้า";
+          default:
+            return "สถานะไม่ทราบ กรุณาตรวจสอบอีกครั้ง";
+        }
+      };
+
+      // ใช้ใน API request
+      const responseHistory = await fetch(`http://localhost:3004/history/parcel`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           parcelId: parcel.id,
           status: status,
           location: "Bangdick",
-          description: "GANGBANG"
+          description: getDescription(status),
         }),
       });
-      
+
       if (!responsehistory.ok) {
         console.error("บันทึกประวัติไม่สำเร็จ");
       }
-      
+
       alert("อัปเดตสถานะสำเร็จ");
     } catch (error) {
       console.error("❌ Server Error:", error.message);
@@ -115,7 +133,7 @@ export default function UpdateStatus() {
             <p className="text-sm"><strong>หมายเลขพัสดุ:</strong> {parcel.id}</p>
             <p className="text-sm"><strong>ผู้ส่ง:</strong> {parcel.senderName}</p>
             <p className="text-sm"><strong>ผู้รับ:</strong> {parcel.recipientName}</p>
-            <p className="text-sm"><strong>สถานะปัจจุบัน:</strong> {status || "ไม่พบสถานะ" }</p>
+            <p className="text-sm"><strong>สถานะปัจจุบัน:</strong> {status || "ไม่พบสถานะ"}</p>
             <Select value={status} onValueChange={(value) => setStatus(String(value))} className="mt-4">
               <SelectItem value="PENDING">PENDING</SelectItem>
               <SelectItem value="DELIVERED">DELIVERED</SelectItem>
