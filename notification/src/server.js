@@ -6,7 +6,7 @@ import cors from "cors";
 import nodemailer from "nodemailer";
 import bodyParser from "body-parser";
 import axios from "axios";
-// import { sendSMS } from "./smsService.js"; // ต้องใส่ .js
+import { sendSMS } from "./smsService.js"; // ต้องใส่ .js
 
 const app = express();
 
@@ -226,12 +226,12 @@ app.post('/notify-parcel', async (req, res) => {
     }
     
     // ส่ง SMS ให้ผู้ส่ง (ถ้ามี)
-    if (senderPhone) {
-      const senderMessage = parcelInfo 
-        ? `พัสดุหมายเลข ${parcelInfo.trackingCode} ที่คุณส่งไปยัง ${parcelInfo.recipientName} อยู่ในระหว่างการจัดส่ง`
-        : "พัสดุที่คุณส่งอยู่ระหว่างการจัดส่ง";
-      await sendSMS(senderPhone, senderMessage);
-    }
+    // if (senderPhone) {
+    //   const senderMessage = parcelInfo 
+    //     ? `พัสดุหมายเลข ${parcelInfo.trackingCode} ที่คุณส่งไปยัง ${parcelInfo.recipientName} อยู่ในระหว่างการจัดส่ง`
+    //     : "พัสดุที่คุณส่งอยู่ระหว่างการจัดส่ง";
+    //   await sendSMS(senderPhone, senderMessage);
+    // }
 
     res.status(200).json({ message: 'SMS sent successfully' });
   } catch (error) {

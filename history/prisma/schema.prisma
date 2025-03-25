@@ -15,7 +15,6 @@ datasource db {
 
 model History {
   id          Int       @id @default(autoincrement())
-  trackingCode   String 
   parcelId    Int       // เชื่อมกับ Parcel
   status      String    // สถานะของพัสดุ (เช่น "กำลังขนส่ง", "ถึงปลายทาง", ฯลฯ)
   location    String    // สถานที่ที่พัสดุอยู่ (เช่น "กรุงเทพฯ", "เชียงใหม่")

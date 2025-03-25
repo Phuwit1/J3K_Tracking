@@ -12,13 +12,20 @@
     "@auth/prisma-adapter": "^2.8.0",
     "@prisma/client": "^6.5.0",
     "@react-google-maps/api": "^2.20.6",
+    "axios": "^1.8.4",
     "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "leaflet": "^1.9.4",
     "next": "15.2.3",
     "next-auth": "^4.24.11",
+    "nodemailer": "^6.10.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-leaflet": "^5.0.0"
+    "react-leaflet": "^5.0.0",
+    "resend": "^4.1.2",
+    "twilio": "^5.5.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

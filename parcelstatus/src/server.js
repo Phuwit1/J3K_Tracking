@@ -1,6 +1,7 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import cors from 'cors';  // ✅ เพิ่ม CORS
+import axios from 'axios';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -57,30 +58,21 @@ app.post('/parcel-status', async (req, res) => {
 app.get('/parcel-status/:trackingCode', async (req, res) => {
   try {
     const { trackingCode } = req.params;
-    
-    const parcel = await prisma.parcel.findFirst({
-      where: { trackingCode },
-    });
-
-    if (!parcel) {
-      return res.status(404).json({ error: 'Parcel not found' });
-    }
-
     const data = await prisma.status.findFirst({
       where: {
-        parcelId: parcel.id, 
+        parcelId: parseInt(trackingCode), // แปลง parcel.id เป็น integer
       },
     });
-
     if (!data) {
       return res.status(404).json({ error: 'Parcel status not found' });
     }
 
-    res.json(data);
+    res.json(data); // ส่งข้อมูลสถานะกลับไป
   } catch (error) {
     res.status(500).json({ error: 'Server error', details: error.message });
   }
 });
+
 
 // 📌 PUT: อัปเดตข้อมูลสถานะพัสดุ
 app.put('/parcel-status/:parcelId', async (req, res) => {
@@ -91,6 +83,7 @@ app.put('/parcel-status/:parcelId', async (req, res) => {
     console.log("parcelId:", parcelId);
     console.log("Status:", status);
 
+    
     const existingRecord = await prisma.status.findFirst({
       where: {
         parcelId: Number(parcelId),
@@ -110,6 +103,25 @@ app.put('/parcel-status/:parcelId', async (req, res) => {
         status,  // อัปเดตสถานะ
       },
     });
+
+    const parcelResponse = await axios.get(`http://localhost:3001/parcel/${parcelId}`);
+    const parcel = parcelResponse.data; 
+
+    if (!parcel) {
+      return res.status(404).json({ error: 'Parcel not found' });
+    }
+
+    const senderPhone = parcel.senderPhone;
+    const recipientPhone = parcel.recipientPhone;
+
+    console.log("recipient", recipientPhone);
+
+
+    await axios.post('http://localhost:3003/notify-parcel', {
+      senderPhone,
+      recipientPhone,
+    });
+
 
     res.json(updatedData);
   } catch (error) {

@@ -31,19 +31,18 @@ export default function UpdateStatus() {
       const response = await fetch(`http://localhost:3001/parcel?trackingCode=${trackingNumber}`);
       const parceldata = await response.json();
       if (!response.ok) throw new Error("ไม่พบข้อมูลพัสดุ");
-
-
-      const response2 = await fetch(`http://localhost:3002/parcel-status/${parceldata[0].id}`);
-      
       if (parceldata.length === 0) {
         throw new Error("ไม่พบข้อมูลพัสดุ");
       }
-      const statusdata2: ParcelStatus = await response2.json();
 
-      console.log("STATUS : " + statusdata2.status);
-
-      setStatus(statusdata2.status);
       setParcel(parceldata[0]);
+
+      const response2 = await fetch(`http://localhost:3002/parcel-status/${parceldata[0].id}`);
+      const statusdata2: ParcelStatus = await response2.json();
+      console.log("STATUS : " + statusdata2.status);
+      setStatus(statusdata2.status);
+
+      
     } catch (error) {
       setParcel(null);
       alert(error.message);
@@ -68,20 +67,20 @@ export default function UpdateStatus() {
     console.log("Parcel data before update:", parcel);
     console.log("trackingCode value:", parcel.trackingCode);
     
-    const trackingCodeToUse = parcel.trackingCode || trackingNumber;
+    // const trackingCodeToUse = parcel.trackingCode || trackingNumber;
 
-    if (!trackingCodeToUse) {
-        alert("ไม่พบรหัสติดตามพัสดุ");
-        return;
-    }
+    // if (!trackingCodeToUse) {
+    //     alert("ไม่พบรหัสติดตามพัสดุ");
+    //     return;
+    // }
       
       if (!response.ok) throw new Error("อัปเดตสถานะไม่สำเร็จ");
       
-      const responsehistory = await fetch(`http://localhost:3004/history/tracking`, {
+      const responsehistory = await fetch(`http://localhost:3004/history/parcel`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          trackingCode: trackingCodeToUse,
+          parcelId: parcel.id,
           status: status,
           location: "Bangdick",
           description: "GANGBANG"
@@ -94,7 +93,7 @@ export default function UpdateStatus() {
       
       alert("อัปเดตสถานะสำเร็จ");
     } catch (error) {
-      alert("Error");
+      console.error("❌ Server Error:", error.message);
     }
   };
 
