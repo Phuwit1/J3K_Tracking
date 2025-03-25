@@ -1,7 +1,7 @@
 // page.tsx
 'use client';
 import { useState } from 'react';
-import Link from 'next/link'; // Import Link component
+import Link from 'next/link';
 
 export default function TrackingHistory() {
   const [trackingCode, setTrackingCode] = useState('');
@@ -30,16 +30,24 @@ export default function TrackingHistory() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-8 bg-white border-4 border-redCustom rounded-xl shadow-lg">
-      <h1 className="text-3xl font-bold text-redCustom mb-8 text-center">📦 追踪包裹 (Parcel Tracking)</h1>
+    <div className="max-w-2xl mx-auto p-8 bg-red-50 border-4 border-red-600 rounded-xl shadow-2xl" 
+         style={{
+           backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url("data:image/svg+xml,%3Csvg width=\'80\' height=\'80\' viewBox=\'0 0 80 80\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23FF0000\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10S0 25.523 0 20s4.477-10 10-10zm10 8c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm40 40c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z\'/%3E%3C/g%3E%3C/svg%3E")',
+         }}
+    >
+      <h1 className="text-3xl font-bold text-red-600 mb-8 text-center flex items-center justify-center">
+        📦 J3kTracking (包裹追踪)
+      </h1>
 
       <form className="space-y-6">
         <div>
-          <label className="block text-lg font-medium text-gray-800 mb-2">请输入您的追踪号码 (Enter your tracking number)</label>
+          <label className="block text-lg font-medium text-gray-800 mb-2">
+            Enter Your Tracking Number 输入追踪号码
+          </label>
           <input
             type="text"
-            className="w-full p-3 border-2 border-redCustom rounded-lg focus:outline-none focus:ring-2 focus:ring-gold-500 text-center"
-            placeholder="输入追踪号码 (Enter tracking code)"
+            className="w-full p-3 border-2 border-red-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 text-center shadow-md"
+            placeholder="Tracking Code 追踪号码"
             value={trackingCode}
             onChange={(e) => setTrackingCode(e.target.value)}
           />
@@ -48,40 +56,75 @@ export default function TrackingHistory() {
         <button
           type="button"
           onClick={fetchHistory}
-          className="w-full bg-redCustom hover:bg-red-700 text-white py-3 rounded-lg font-bold shadow-xl transition duration-300"
+          className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold shadow-xl transition duration-300 flex items-center justify-center"
           disabled={loading}
         >
-          {loading ? '加载中...' : '🔍 追踪包裹'}
+          {loading ? (
+            <>🔄 Loading 加载中...</>
+          ) : (
+            <>
+              🔍 Track Parcel 追踪包裹
+            </>
+          )}
         </button>
       </form>
 
-      {error && <p className="text-red-600 mt-4 text-lg text-center">❌ {error}</p>}
+      {error && (
+        <p className="text-red-600 mt-4 text-lg text-center flex items-center justify-center">
+          ❌ {error}
+        </p>
+      )}
 
       {history && (
-        <div className="mt-8 border-t-4 border-gold-600 pt-6">
-          <h2 className="text-2xl font-bold text-redCustom mb-4">📜 追踪详情 (Tracking Details)</h2>
+        <div className="mt-8 border-t-4 border-yellow-600 pt-6">
+          <h2 className="text-2xl font-bold text-red-600 mb-4 flex items-center">
+            🕰️ Tracking Details 追踪详情
+          </h2>
           <div className="space-y-4">
-            <p className="text-lg"><strong>📌 追踪号码:</strong> {history.parcel.trackingCode}</p>
-            <p className="text-lg"><strong>📍 出发地:</strong> {history.parcel.origin}</p>
-            <p className="text-lg"><strong>🎯 目的地:</strong> {history.parcel.destination}</p>
+            <p className="text-lg flex items-center">
+              🏷️ <strong>Tracking Code 追踪号码:</strong> {history.parcel.trackingCode}
+            </p>
+            <p className="text-lg flex items-center">
+              🚩 <strong>Origin 出发地:</strong> {history.parcel.origin}
+            </p>
+            <p className="text-lg flex items-center">
+              🏁 <strong>Destination 目的地:</strong> {history.parcel.destination}
+            </p>
           </div>
 
-          <h3 className="text-xl font-bold mt-6 text-redCustom">📖 物流历史 (History)</h3>
+          <h3 className="text-xl font-bold mt-6 text-red-600 flex items-center">
+            📋 History 物流历史
+          </h3>
+
+          <div className="mt-4 text-center">
+            <Link href={history ? `/gps?trackingCode=${history.parcel.trackingCode}` : '#'} legacyBehavior>
+              <a
+                className={`inline-block bg-yellow-500 text-white py-2 px-4 rounded-lg font-bold text-xl ${!history || !history.history.length ? 'opacity-50 cursor-not-allowed' : 'hover:bg-yellow-700'}`}
+                aria-disabled={!history || !history.history.length}
+              >
+                🗺️ Track on Map 在地图上追踪
+              </a>
+            </Link>
+          </div>
+
           <ul className="mt-4 space-y-4">
             {history.history.map((record, index) => (
-              <li key={index} className="p-4 border-2 border-redCustom bg-red-50 rounded-lg shadow-md">
-                <p className="text-lg"><strong>🚀 状态:</strong> {record.status}</p>
-                <p className="text-lg"><strong>📍 位置:</strong> {record.location}</p>
-                <p className="text-lg"><strong>⏳ 时间:</strong> {new Date(record.timestamp).toLocaleString()}</p>
-                <p className="italic text-sm">📝 {record.description}</p>
-                {/* เพิ่มปุ่ม "ดูแผนที่" พร้อม Link */}
-                <div className="mt-2">
-                  <Link href={`/gps?trackingCode=${history.parcel.trackingCode}`} legacyBehavior>
-                    <a className="inline-block bg-gold-500 hover:bg-gold-700 text-white py-2 px-4 rounded-lg font-bold text-sm">
-                      🗺️ ดูแผนที่
-                    </a>
-                  </Link>
-                </div>
+              <li 
+                key={index} 
+                className="p-4 border-2 border-red-600 bg-white rounded-lg shadow-md transform transition hover:scale-105"
+              >
+                <p className="text-lg flex items-center">
+                  📦 <strong>Status 状态:</strong> {record.status}
+                </p>
+                <p className="text-lg flex items-center">
+                  📍 <strong>Location 位置:</strong> {record.location}
+                </p>
+                <p className="text-lg flex items-center">
+                  🕒 <strong>Time 时间:</strong> {new Date(record.timestamp).toLocaleString()}
+                </p>
+                <p className="italic text-sm text-gray-600 mt-2">
+                  📝 {record.description}
+                </p>
               </li>
             ))}
           </ul>
