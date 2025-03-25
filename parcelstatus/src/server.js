@@ -124,7 +124,12 @@ app.put('/parcel-status/:parcelId', async (req, res) => {
       await axios.post('http://localhost:3003/send-parcel-email-by-id', {
         parcelId,
         subject: `อัปเดตสถานะพัสดุ: ${parcel.trackingCode}`,
-        text: `พัสดุของคุณหมายเลข ${parcel.trackingCode} มีสถานะใหม่: ${status}`,
+        text: `เรียนท่านลูกค้า,\n\n\
+ขอเรียนให้ท่านทราบว่า พัสดุของท่าน หมายเลขติดตามพัสดุ ${parcel.trackingCode} \
+ขณะนี้มีการอัปเดตสถานะล่าสุดเป็น: "${status}".\n\n\
+ท่านสามารถติดตามสถานะพัสดุเพิ่มเติมได้ที่เว็บไซต์ของเรา http://localhost:3000\n\n\
+ขอขอบพระคุณที่ใช้บริการของเรา\n\
+ทีมงานฝ่ายจัดส่งพัสดุ`,
         notifyType: "both", // แจ้งทั้งอีเมลและ SMS
       });
     }
