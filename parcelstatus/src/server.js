@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 // ✅ เปิดให้ Frontend (`http://localhost:3000`) ใช้ API ได้
 app.use(cors({
   origin: 'http://localhost:3000', // อนุญาตเฉพาะ Frontend ของคุณ
-  methods: ['GET', 'POST'], // อนุญาตเฉพาะ method ที่ใช้
+  methods: ['GET', 'POST', 'PUT', 'OPTIONS'], // อนุญาตเฉพาะ method ที่ใช้
 }));
 
 
@@ -58,12 +58,12 @@ app.get('/parcel-status/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
-    const data = await prisma.status.findUnique({
+    const data = await prisma.status.findFirst({
       where: {
-        id: Number(id),
+        parcelId: Number(id), // ใช้ parcelId เป็นการค้นหา
       },
+      
     });
-
     if (!data) {
       return res.status(404).json({ error: 'Parcel status update not found' });
     }
@@ -75,20 +75,31 @@ app.get('/parcel-status/:id', async (req, res) => {
 });
 
 // 📌 PUT: อัปเดตข้อมูลสถานะพัสดุ
-app.put('/parcel-status/:id', async (req, res) => {
+app.put('/parcel-status/:parcelId', async (req, res) => {
   try {
-    const { id } = req.params;
-    const { parcelId, status, updatedBy, location } = req.body;
+    const { parcelId } = req.params;
+    const { status } = req.body;
 
+    console.log("parcelId:", parcelId);
+    console.log("Status:", status);
+
+    const existingRecord = await prisma.status.findFirst({
+      where: {
+        parcelId: Number(parcelId),
+      },
+    });
+
+    if (!existingRecord) {
+      return res.status(404).json({ error: 'Record not found' });
+    }
+
+    // อัปเดตข้อมูลที่พบ
     const updatedData = await prisma.status.update({
       where: {
-        id: Number(id),
+        id: existingRecord.id,  // ใช้ id ของรายการที่ค้นพบ
       },
       data: {
-        parcelId,
-        status,
-        updatedBy,
-        location,
+        status,  // อัปเดตสถานะ
       },
     });
 

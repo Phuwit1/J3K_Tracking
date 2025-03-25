@@ -131,15 +131,10 @@ app.get('/history', async (req, res) => {
 app.post('/history/tracking', async (req, res) => {
   try {
     const { trackingCode, status, location, description } = req.body;
-
-    // ตรวจสอบว่ามีข้อมูลที่จำเป็นครบถ้วนหรือไม่
     if (!trackingCode || !status || !location) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
-
-    // ดึงข้อมูลพัสดุจาก parcel service
     const parcel = await getParcelByTrackingCode(trackingCode);
-
     if (!parcel) {
       return res.status(404).json({ message: 'Parcel not found' });
     }
@@ -147,6 +142,7 @@ app.post('/history/tracking', async (req, res) => {
     // สร้างประวัติใหม่
     const history = await prisma.history.create({
       data: {
+        trackingCode,
         parcelId: parcel.id,
         status,
         location,
