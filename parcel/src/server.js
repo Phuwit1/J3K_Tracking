@@ -1,3 +1,4 @@
+// 
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import crypto from 'crypto';
@@ -75,6 +76,7 @@ app.post('/parcel', async (req, res) => {
       senderPhone,
       recipientPhone,
     });
+
 
     res.json(newData);
   } catch (error) {

@@ -1,3 +1,4 @@
+//parcelstatus
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import cors from 'cors';  // ✅ เพิ่ม CORS
@@ -83,7 +84,7 @@ app.put('/parcel-status/:parcelId', async (req, res) => {
     console.log("parcelId:", parcelId);
     console.log("Status:", status);
 
-    
+
     const existingRecord = await prisma.status.findFirst({
       where: {
         parcelId: Number(parcelId),
@@ -105,7 +106,7 @@ app.put('/parcel-status/:parcelId', async (req, res) => {
     });
 
     const parcelResponse = await axios.get(`http://localhost:3001/parcel/${parcelId}`);
-    const parcel = parcelResponse.data; 
+    const parcel = parcelResponse.data;
 
     if (!parcel) {
       return res.status(404).json({ error: 'Parcel not found' });
@@ -113,9 +114,20 @@ app.put('/parcel-status/:parcelId', async (req, res) => {
 
     const senderPhone = parcel.senderPhone;
     const recipientPhone = parcel.recipientPhone;
+    const recipientEmail = parcel.email;
 
     console.log("recipient", recipientPhone);
+    console.log("recipient email:", recipientEmail);
 
+    // ✅ เรียก API แจ้งเตือนอีเมล
+    if (recipientEmail) {
+      await axios.post('http://localhost:3003/send-parcel-email-by-id', {
+        parcelId,
+        subject: `อัปเดตสถานะพัสดุ: ${parcel.trackingCode}`,
+        text: `พัสดุของคุณหมายเลข ${parcel.trackingCode} มีสถานะใหม่: ${status}`,
+        notifyType: "both", // แจ้งทั้งอีเมลและ SMS
+      });
+    }
 
     await axios.post('http://localhost:3003/notify-parcel', {
       senderPhone,
