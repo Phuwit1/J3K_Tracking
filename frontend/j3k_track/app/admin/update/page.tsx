@@ -82,7 +82,7 @@ export default function UpdateStatus() {
         body: JSON.stringify({
           parcelId: parcel.id,
           status: status,
-          location: "Bangdick",
+          location: note,
           description: "GANGBANG"
         }),
       });
@@ -123,6 +123,12 @@ export default function UpdateStatus() {
               <SelectItem value="OUT_FOR_DELIVERY">OUT_FOR_DELIVERY</SelectItem>
               <SelectItem value="EXCEPTION">EXCEPTION</SelectItem>
             </Select>
+            <Textarea
+              placeholder="ระบุสถานที่"
+              value={note}
+              onChange={(e:any) => setNote(e.target.value)}
+              className="mt-4"
+            />
             <Button className="mt-4 w-full bg-blue-500 hover:bg-blue-600 text-white" onClick={handleUpdateStatus}>
               บันทึกสถานะ
             </Button>

@@ -127,39 +127,6 @@ app.get('/history', async (req, res) => {
   }
 });
 
-// POST: เพิ่มประวัติการขนส่งใหม่สำหรับพัสดุ (โดยใช้ tracking code)
-app.post('/history/tracking', async (req, res) => {
-  try {
-    const { trackingCode, status, location, description } = req.body;
-    if (!trackingCode || !status || !location) {
-      return res.status(400).json({ message: 'Missing required fields' });
-    }
-    const parcel = await getParcelByTrackingCode(trackingCode);
-    if (!parcel) {
-      return res.status(404).json({ message: 'Parcel not found' });
-    }
-
-    // สร้างประวัติใหม่
-    const history = await prisma.history.create({
-      data: {
-        trackingCode,
-        parcelId: parcel.id,
-        status,
-        location,
-        description: description || ''
-      }
-    });
-
-    res.status(201).json({
-      message: 'History record created successfully',
-      data: history
-    });
-  } catch (error) {
-    console.error('Error creating history record:', error);
-    res.status(500).json({ message: 'Internal server error', error: error.message });
-  }
-});
-
 // POST: เพิ่มประวัติการขนส่งใหม่สำหรับพัสดุ (โดยใช้ parcel ID)
 app.post('/history/parcel', async (req, res) => {
   try {
