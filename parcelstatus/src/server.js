@@ -54,18 +54,26 @@ app.post('/parcel-status', async (req, res) => {
 });
 
 // 📌 GET: ดึงข้อมูลอัปเดตสถานะพัสดุโดยใช้ ID
-app.get('/parcel-status/:id', async (req, res) => {
+app.get('/parcel-status/:trackingCode', async (req, res) => {
   try {
-    const { id } = req.params;
+    const { trackingCode } = req.params;
+    
+    const parcel = await prisma.parcel.findFirst({
+      where: { trackingCode },
+    });
+
+    if (!parcel) {
+      return res.status(404).json({ error: 'Parcel not found' });
+    }
 
     const data = await prisma.status.findFirst({
       where: {
-        parcelId: Number(id), // ใช้ parcelId เป็นการค้นหา
+        parcelId: parcel.id, 
       },
-      
     });
+
     if (!data) {
-      return res.status(404).json({ error: 'Parcel status update not found' });
+      return res.status(404).json({ error: 'Parcel status not found' });
     }
 
     res.json(data);

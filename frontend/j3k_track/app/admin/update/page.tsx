@@ -15,27 +15,35 @@ interface Parcel {
     trackingCode: string;
   }
 
+  interface ParcelStatus {
+    status: string;
+  }
+  
+
 export default function UpdateStatus() {
   const [trackingNumber, setTrackingNumber] = useState("");
-
- 
-
   const [parcel, setParcel] = useState<Parcel | null>(null);
   const [status, setStatus] = useState("");
   const [note, setNote] = useState("");
 
   const handleSearch = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/parcel/${trackingNumber}`);
-      const response2 = await fetch(`http://localhost:3002/parcel-status/${trackingNumber}`);
+      const response = await fetch(`http://localhost:3001/parcel?trackingCode=${trackingNumber}`);
+      const parceldata = await response.json();
       if (!response.ok) throw new Error("ไม่พบข้อมูลพัสดุ");
-      const data = await response.json();
 
-      const data2 = await response2.json();
-      console.log("STATUS : " + data2.status);
-      setStatus(data2.status); // ตรวจสอบว่า status ถูกส่งมาอย่างถูกต้อง
-    
-      setParcel(data);
+
+      const response2 = await fetch(`http://localhost:3002/parcel-status/${parceldata[0].id}`);
+      
+      if (parceldata.length === 0) {
+        throw new Error("ไม่พบข้อมูลพัสดุ");
+      }
+      const statusdata2: ParcelStatus = await response2.json();
+
+      console.log("STATUS : " + statusdata2.status);
+
+      setStatus(statusdata2.status);
+      setParcel(parceldata[0]);
     } catch (error) {
       setParcel(null);
       alert(error.message);
@@ -86,7 +94,7 @@ export default function UpdateStatus() {
       
       alert("อัปเดตสถานะสำเร็จ");
     } catch (error) {
-      alert(error.message);
+      alert("Error");
     }
   };
 
@@ -100,7 +108,7 @@ export default function UpdateStatus() {
             value={trackingNumber}
             onChange={(e) => setTrackingNumber(e.target.value)}
           />
-          <Button onClick={handleSearch}>ค้นหา</Button>
+          <Button className="bg-blue-500 hover:bg-blue-600 text-white" onClick={handleSearch}>ค้นหา</Button>
         </div>
 
         {parcel && (
@@ -109,7 +117,7 @@ export default function UpdateStatus() {
             <p className="text-sm"><strong>ผู้ส่ง:</strong> {parcel.senderName}</p>
             <p className="text-sm"><strong>ผู้รับ:</strong> {parcel.recipientName}</p>
             <p className="text-sm"><strong>สถานะปัจจุบัน:</strong> {status || "ไม่พบสถานะ" }</p>
-            <Select value={status} onValueChange={setStatus} className="mt-4">
+            <Select value={status} onValueChange={(value) => setStatus(String(value))} className="mt-4">
               <SelectItem value="PENDING">PENDING</SelectItem>
               <SelectItem value="DELIVERED">DELIVERED</SelectItem>
               <SelectItem value="IN_TRANSIT">IN_TRANSIT</SelectItem>
