@@ -9,6 +9,14 @@ export default function TrackingHistory() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const statusMapping: Record<string, string> = {
+    PENDING: "รอดำเนินการ",
+    IN_TRANSIT: "กำลังจัดส่ง",
+    OUT_FOR_DELIVERY: "กำลังนำส่ง",
+    DELIVERED: "จัดส่งสำเร็จ",
+    EXCEPTION: "เกิดข้อผิดพลาด",
+  };
+
   const fetchHistory = async () => {
     if (!trackingCode) return;
     setLoading(true);
@@ -30,10 +38,10 @@ export default function TrackingHistory() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-8 bg-red-50 border-4 border-red-600 rounded-xl shadow-2xl" 
-         style={{
-           backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url("data:image/svg+xml,%3Csvg width=\'80\' height=\'80\' viewBox=\'0 0 80 80\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23FF0000\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10S0 25.523 0 20s4.477-10 10-10zm10 8c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm40 40c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z\'/%3E%3C/g%3E%3C/svg%3E")',
-         }}
+    <div className="max-w-2xl mx-auto p-8 bg-red-50 border-4 border-red-600 rounded-xl shadow-2xl"
+      style={{
+        backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.9), rgba(255,255,255,0.9)), url("data:image/svg+xml,%3Csvg width=\'80\' height=\'80\' viewBox=\'0 0 80 80\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23FF0000\' fill-opacity=\'0.1\'%3E%3Cpath d=\'M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10S0 25.523 0 20s4.477-10 10-10zm10 8c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm40 40c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8z\'/%3E%3C/g%3E%3C/svg%3E")',
+      }}
     >
       <h1 className="text-3xl font-bold text-red-600 mb-8 text-center flex items-center justify-center">
         📦 J3kTracking (包裹追踪)
@@ -109,13 +117,14 @@ export default function TrackingHistory() {
 
           <ul className="mt-4 space-y-4">
             {history.history.map((record, index) => (
-              <li 
-                key={index} 
+              <li
+                key={index}
                 className="p-4 border-2 border-red-600 bg-white rounded-lg shadow-md transform transition hover:scale-105"
               >
                 <p className="text-lg flex items-center">
-                  📦 <strong>Status 状态:</strong> {record.status}
+                  📦 <strong>Status 状态:</strong> {statusMapping[record.status] || record.status}
                 </p>
+
                 <p className="text-lg flex items-center">
                   📍 <strong>Location 位置:</strong> {record.location}
                 </p>
