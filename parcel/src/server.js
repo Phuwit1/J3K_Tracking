@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
 // ✅ เปิดให้ Frontend (`http://localhost:3000`) ใช้ API ได้
 app.use(cors({
   origin: 'http://localhost:3000', // อนุญาตเฉพาะ Frontend ของคุณ
-  methods: ['GET', 'POST'], // อนุญาตเฉพาะ method ที่ใช้
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // อนุญาตเฉพาะ method ที่ใช้
 }));
 
 app.use(express.json()); // รองรับ JSON request body
