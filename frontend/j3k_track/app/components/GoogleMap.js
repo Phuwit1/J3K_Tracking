@@ -13,7 +13,7 @@ const GoogleMapComponent = ({ destination, currentLocation }) => {
   }, [currentLocation, destination]);
 
   return (
-    <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEYS}>
+    <LoadScript googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}>
       <GoogleMap mapContainerStyle={mapContainerStyle} center={destination} zoom={14}>
         {/* หมุดตำแหน่งคงที่ */}
         <Marker position={destination} label="📍" />

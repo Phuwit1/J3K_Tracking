@@ -1,19 +1,24 @@
+#ติดตั้ง Project 
+npm install \
+npm run dev \
+
+#Fontend install 
+npm install @react-google-maps/api \
+npm install next-auth \
+npm install @auth/prisma-adapter \
+npm i bcrypt \
+npm i --save-dev @types/bcrypt \
 npm install @prisma/client \
 npx prisma init \
 npx prisma migrate dev --name init \
 
-npm install express 
-npm install axios
-npm install express axios resend dotenv
-npm install nodemailer
-npm install dotenv
-npm install cors
-npm install twilio dotenv
 
+#backend install ทุก service \
+npm install express axios dotenv nodemailer cors twilio \
+npm install @prisma/client \
+npx prisma init  \
+npx prisma migrate dev --name init  \
 
-
-npm install @react-google-maps/api
-npm install next-auth
-npm install @auth/prisma-adapter
-npm i bcrypt
-npm i --save-dev @types/bcrypt
+ู
+#run ทุกservice 
+node src/server.js
